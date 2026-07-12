@@ -1,4 +1,4 @@
-# Liquid Quota Widget
+# Codex 额度实时监控
 
 面向 Windows 的 Codex 真实额度桌面小组件，采用轻量液态玻璃视觉风格。
 
@@ -52,7 +52,7 @@ GitHub Actions 会在 `windows-latest` 和 Node.js 22 环境中重复执行语�
 ## 项目结构
 
 ```text
-LiquidQuotaWidget/
+CodexQuotaMonitor/
 ├─ .github/workflows/windows-ci.yml  # Windows CI
 ├─ scripts/install.ps1               # 安装与自启动注册
 ├─ scripts/uninstall.ps1             # 卸载
