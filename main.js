@@ -23,8 +23,23 @@ function createWindow() {
 
 async function getUsage() {
   try {
+    const sessionsRoot = path.join(os.homedir(), '.codex', 'sessions');
+    const files = [];
+    const walkFiles = dir => { for (const entry of fs.readdirSync(dir,{withFileTypes:true})) { const full=path.join(dir,entry.name); if(entry.isDirectory())walkFiles(full); else if(entry.name.endsWith('.jsonl'))files.push({full,mtime:fs.statSync(full).mtimeMs}); }};
+    walkFiles(sessionsRoot);
+    files.sort((a,b)=>b.mtime-a.mtime);
+    const findLimits = value => {
+      if(!value || typeof value!=='object') return null;
+      if(Object.prototype.hasOwnProperty.call(value,'rate_limits') && value.rate_limits?.primary) return value.rate_limits;
+      for(const child of Object.values(value)){const found=findLimits(child);if(found)return found;}
+      return null;
+    };
+    for(const file of files.slice(0,20)) {
+      const lines=fs.readFileSync(file.full,'utf8').trim().split(/\r?\n/);
+      for(let i=lines.length-1;i>=0;i--){try{const limits=findLimits(JSON.parse(lines[i]));if(limits)return {ok:true,plan:(limits.plan_type||'Codex').toUpperCase(),primaryRemaining:Math.max(0,Math.round(100-limits.primary.used_percent)),primaryReset:limits.primary.resets_at||null,secondaryRemaining:Math.max(0,Math.round(100-(limits.secondary?.used_percent||0))),secondaryReset:limits.secondary?.resets_at||null,source:'local'}}catch{}}
+    }
     const auth = JSON.parse(fs.readFileSync(path.join(os.homedir(), '.codex', 'auth.json'), 'utf8'));
-    const response = await net.fetch('https://chatgpt.com/backend-api/wham/usage', { headers: { Authorization: `Bearer ${auth.tokens.access_token}`, 'ChatGPT-Account-Id': auth.tokens.account_id }});
+    const response = await net.fetch('https://chatgpt.com/backend-api/wham/usage', { signal:AbortSignal.timeout(8000), headers: { Authorization: `Bearer ${auth.tokens.access_token}`, 'ChatGPT-Account-Id': auth.tokens.account_id }});
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json(), primary = data.rate_limit?.primary_window, secondary = data.rate_limit?.secondary_window;
     return { ok:true, plan:(data.plan_type||'Codex').toUpperCase(), primaryRemaining:Math.max(0,Math.round(100-(primary?.used_percent||0))), primaryReset:primary?.reset_at||null, secondaryRemaining:Math.max(0,Math.round(100-(secondary?.used_percent||0))), secondaryReset:secondary?.reset_at||null };
