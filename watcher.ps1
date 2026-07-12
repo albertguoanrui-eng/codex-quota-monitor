@@ -1,4 +1,6 @@
 $ErrorActionPreference = 'SilentlyContinue'
+$mutex = New-Object System.Threading.Mutex($false, 'Local\CodexQuotaMonitorWatcher')
+if (-not $mutex.WaitOne(0, $false)) { exit 0 }
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $electron = Join-Path $root 'node_modules\electron\dist\electron.exe'
 $widgetPid = $null

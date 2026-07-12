@@ -22,7 +22,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 .\scripts\install.ps1
 ```
 
-安装脚本会执行确定性依赖安装、注册当前用户登录启动项，并启动隐藏监控器。打开 Codex 后，小组件会自动出现。
+安装脚本会执行确定性依赖安装、注册当前用户登录计划任务，并启动隐藏监控器。计划任务支持异常自动重启；打开 Codex 后，小组件会自动出现，退出 Codex 后自动关闭。
 
 ## 卸载
 
