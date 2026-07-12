@@ -1,0 +1,31 @@
+{
+  "name": "liquid-quota-widget",
+  "version": "1.0.0",
+  "description": "iOS liquid glass inspired desktop quota widget",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check main.js && node --check preload.js && node --check renderer.js",
+    "pack": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "^43.1.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.lizihao.liquidquota",
+    "productName": "Liquid Quota",
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "styles.css",
+      "renderer.js",
+      "watcher.ps1",
+      "scripts/**/*"
+    ],
+    "win": {
+      "target": "portable"
+    }
+  }
+}

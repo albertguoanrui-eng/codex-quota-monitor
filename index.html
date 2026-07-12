@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><title>Liquid Quota</title><link rel="stylesheet" href="styles.css"></head>
+<body>
+  <main class="glass high" id="card">
+    <div class="orb cyan"></div><div class="orb lilac"></div><div class="orb warm"></div>
+    <header class="drag">
+      <div><div class="caption">5 小时额度</div></div>
+      <nav class="no-drag">
+        <span class="live loading" id="status" title="正在同步"></span>
+        <button id="pin" class="active" title="保持置顶">◆</button>
+        <button id="close" title="关闭">×</button>
+      </nav>
+    </header>
+    <section>
+      <div class="percent"><span id="value">74</span><small>%</small></div>
+      <div class="bar"><i id="bar"></i></div>
+      <p id="reset" data-zh="1 小时 18 分钟后重置" data-en="Resets in 1h 18m">1 小时 18 分钟后重置</p>
+    </section>
+    <footer>
+      <div><span id="weeklyLabel">本周剩余</span><strong><span id="weekly">--</span><small>%</small></strong></div>
+      <button id="details" data-zh="查看重置机会  ›" data-en="View reset credits  ›">查看重置机会  ›</button>
+    </footer>
+    <div id="toast">下一次重置：8/1 04:14</div>
+  </main>
+  <script src="renderer.js"></script>
+</body></html>
