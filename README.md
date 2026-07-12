@@ -60,6 +60,7 @@ CodexQuotaMonitor/
 ├─ preload.js                         # 安全 IPC 桥接
 ├─ renderer.js                        # 额度刷新与对比度渲染
 ├─ styles.css                         # 液态玻璃界面
+├─ launcher.vbs                       # 无窗口后台启动器
 └─ watcher.ps1                        # Codex 进程监控
 ```
 
