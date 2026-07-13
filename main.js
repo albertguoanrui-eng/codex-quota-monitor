@@ -34,12 +34,13 @@ async function getUsage() {
       for(const child of Object.values(value)){const found=findLimits(child);if(found)return found;}
       return null;
     };
-    let latestUsage = null;
+    let latestUsage = null, latestCanonicalUsage = null;
     for(const file of files.slice(0,20)) {
       const lines=fs.readFileSync(file.full,'utf8').trim().split(/\r?\n/);
-      for(let i=lines.length-1;i>=0;i--){try{const event=JSON.parse(lines[i]),limits=findLimits(event);if(limits){const weekly=limits.secondary||limits.primary,timestamp=Date.parse(event.timestamp)||file.mtime;if(!latestUsage||timestamp>latestUsage.timestamp)latestUsage={timestamp,ok:true,plan:(limits.plan_type||'Codex').toUpperCase(),weeklyRemaining:Math.max(0,Math.round(100-weekly.used_percent)),weeklyReset:weekly.resets_at||null,source:'local'};break}}catch{}}
+      for(let i=lines.length-1;i>=0;i--){try{const event=JSON.parse(lines[i]),limits=findLimits(event);if(limits){const weekly=limits.secondary||limits.primary,timestamp=Date.parse(event.timestamp)||file.mtime,usage={timestamp,ok:true,plan:(limits.plan_type||'Codex').toUpperCase(),weeklyRemaining:Math.max(0,Math.round(100-weekly.used_percent)),weeklyReset:weekly.resets_at||null,source:'local'};if(!latestUsage||timestamp>latestUsage.timestamp)latestUsage=usage;if(limits.limit_id==='codex'&&(!latestCanonicalUsage||timestamp>latestCanonicalUsage.timestamp))latestCanonicalUsage=usage;break}}catch{}}
     }
-    if(latestUsage){delete latestUsage.timestamp;return latestUsage;}
+    const selectedUsage=latestCanonicalUsage||latestUsage;
+    if(selectedUsage){delete selectedUsage.timestamp;return selectedUsage;}
     const auth = JSON.parse(fs.readFileSync(path.join(os.homedir(), '.codex', 'auth.json'), 'utf8'));
     const response = await net.fetch('https://chatgpt.com/backend-api/wham/usage', { signal:AbortSignal.timeout(8000), headers: { Authorization: `Bearer ${auth.tokens.access_token}`, 'ChatGPT-Account-Id': auth.tokens.account_id }});
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
