@@ -9,7 +9,7 @@ let pinned = true;
 function createWindow() {
   const display = screen.getPrimaryDisplay().workArea;
   win = new BrowserWindow({
-    width: 202, height: 122,
+    width: 202, height: 104,
     x: display.x + display.width - 222,
     y: display.y + 32,
     frame: false, transparent: true, resizable: false,
